@@ -1,0 +1,17 @@
+# Byte-compiled files
+*.elc
+
+# Local customizations
+local/
+
+# Private config (if exists)
+private.el
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Editor/IDE
+*.swp
+*.swo
+*~
