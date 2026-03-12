@@ -99,7 +99,7 @@
            ((parent-is "block") parent-bol 4)
            ((parent-is "function_definition") parent-bol 4)
            ((parent-is "function_call") parent-bol 4)
-           ((parent-is "arguments") first-sibling 4)
+           ((parent-is "arguments") parent-bol 4)
            ((parent-is "table_constructor") parent-bol 4)
            ((parent-is "if_statement") parent-bol 4)
            ((parent-is "repeat_statement") parent-bol 4)
