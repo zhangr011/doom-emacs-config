@@ -87,6 +87,26 @@
 (map! :i "C-\\" #'toggle-input-method)
 (map! :i "C-`" #'toggle-input-method)
 
-;; Lua formatter configuration (using stylua)
-(after! lua-mode
-  (setq-hook! 'lua-mode-hook +format-with 'stylua))
+;; Lua mode configuration with 4-space indentation (using tree-sitter)
+(after! lua-ts-mode
+  (setq treesit-simple-indent-rules
+        `((lua
+           ((node-is ")") parent-bol 0)
+           ((node-is "]") parent-bol 0)
+           ((node-is "else") parent-bol 0)
+           ((node-is "elseif") parent-bol 0)
+           ((node-is "end") parent-bol 0)
+           ((parent-is "block") parent-bol 4)
+           ((parent-is "function_definition") parent-bol 4)
+           ((parent-is "function_call") parent-bol 4)
+           ((parent-is "arguments") first-sibling 4)
+           ((parent-is "table_constructor") parent-bol 4)
+           ((parent-is "if_statement") parent-bol 4)
+           ((parent-is "repeat_statement") parent-bol 4)
+           ((parent-is "while_statement") parent-bol 4)
+           ((parent-is "for_statement") parent-bol 4)
+           ((parent-is "assignment_expression") parent-bol 4)))))
+
+;; Auto-enable lua-ts-mode for lua files
+(add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-ts-mode))
+
