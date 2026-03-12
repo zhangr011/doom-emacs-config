@@ -5,3 +5,7 @@ column_width = 120
 quote_style = "AutoPreferDouble"
 call_parentheses = "Always"
 collapse_simple_statement = "Never"
+
+# Ignore directories/files with encoding issues or Lua 5.1 syntax
+[ignore]
+directories = ["Tools/LuaCfgOptimizer"]
