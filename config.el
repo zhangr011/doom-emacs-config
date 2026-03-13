@@ -156,3 +156,6 @@
 ;; Auto-enable lua-ts-mode for lua files
 (add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-ts-mode))
 
+;; Maximize frame on startup
+(add-hook! 'after-init-hook #'toggle-frame-maximized)
+
