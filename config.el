@@ -90,7 +90,7 @@
 (use-package! liberime
   :load-path "~/.config/doom"
   :init
-  (setq liberime-user-data-dir "~/Library/Rime"
+  (setq liberime-user-data-dir "~/Library/rime"
         liberime-module-file "~/.config/doom/lib/liberime-core.so")
   :config
   ;; Automatically build liberime-core if not loaded
