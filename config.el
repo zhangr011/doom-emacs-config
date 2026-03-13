@@ -159,3 +159,31 @@
 ;; Maximize frame on startup
 (add-hook! 'after-init-hook #'toggle-frame-maximized)
 
+;; LSP server configuration
+(use-package! eglot
+  :config
+  ;; C/C++ - clangd (use Homebrew version for better C++20/23 support)
+  (add-to-list 'eglot-server-programs
+               '((c-mode c++-mode cc-mode) . ("/opt/homebrew/opt/llvm/bin/clangd"
+                                                "--header-insertion=iwyu"
+                                                "--header-insertion-decorators"
+                                                "--clang-tidy"
+                                                "--log=verbose")))
+
+  ;; Lua - lua-language-server (Homebrew)
+  (add-to-list 'eglot-server-programs
+               `(lua-mode . ("/opt/homebrew/bin/lua-language-server"
+                             "--locale=en"
+                             "--logpath=/tmp/lua-language-server.log")))
+
+  ;; JavaScript/TypeScript - typescript-language-server
+  (add-to-list 'eglot-server-programs
+               '((js-mode js-jsx-mode typescript-mode typescript-tsx-mode) .
+                 ("~/.nvm/versions/node/v18.12.1/bin/typescript-language-server" "--stdio")))
+
+  ;; C# - Use dotnet Roslyn server (via dotnet build)
+  ;; Note: For full C# LSP support, you may need to install:
+  ;; brew install roslyn or use the OmniSharp server manually
+  (add-to-list 'eglot-server-programs
+               `(csharp-mode . ("dotnet" "/usr/local/share/dotnet/Roslyn/bin/Microsoft.CodeAnalysis.LanguageServer.dll"))))
+
