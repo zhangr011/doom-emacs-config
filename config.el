@@ -155,6 +155,10 @@
   (add-to-list 'eglot-server-programs
                `(csharp-mode . ("dotnet" "/usr/local/share/dotnet/Roslyn/bin/Microsoft.CodeAnalysis.LanguageServer.dll"))))
 
+;; vterm anti-flicker filter
+(after! vterm
+  (add-hook! 'vterm-mode-hook #'vterm-anti-flicker-filter-mode))
+
 ;; Claude Code IDE integration
 (after! claude-code-ide
   ;; Keybinding for Claude Code IDE menu
@@ -162,8 +166,8 @@
         :desc "Claude Code IDE" "c c" #'claude-code-ide-menu)
   ;; Set full path to Claude CLI (Emacs on macOS may not inherit shell PATH)
   (setq claude-code-ide-cli-path "/Users/zhangrong/.local/bin/claude")
-  ;; Use eat terminal backend (pure Elisp, better TUI support)
-  (setq claude-code-ide-terminal-backend 'eat)
+  ;; Use vterm terminal backend
+  (setq claude-code-ide-terminal-backend 'vterm)
   ;; Clear nesting detection env var so claude can start inside Emacs
   (setenv "CLAUDECODE" nil)
   ;; Enable built-in Emacs MCP tools (xref, treesit, imenu, project-info)

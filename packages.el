@@ -26,6 +26,10 @@
            :files ("*.el" ("term" "term/*.el") "terminfo" "terminfo68"
                    ("e" "e/eat.el") ("e" "e/eat-test.el"))))
 
+;; vterm anti-flicker filter - reduces visual flickering in vterm
+(package! vterm-anti-flicker-filter
+  :recipe (:host github :repo "martinbaillie/vterm-anti-flicker-filter"))
+
 ;; To install a package directly from a remote git repo, you must specify a
 ;; `:recipe'. You'll find documentation on what `:recipe' accepts here:
 ;; https://github.com/radian-software/straight.el#the-recipe-format
