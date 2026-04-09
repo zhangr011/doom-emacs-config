@@ -162,6 +162,8 @@
         :desc "Claude Code IDE" "c c" #'claude-code-ide-menu)
   ;; Set full path to Claude CLI (Emacs on macOS may not inherit shell PATH)
   (setq claude-code-ide-cli-path "/Users/zhangrong/.local/bin/claude")
+  ;; Use eat terminal backend (pure Elisp, better TUI support)
+  (setq claude-code-ide-terminal-backend 'eat)
   ;; Clear nesting detection env var so claude can start inside Emacs
   (setenv "CLAUDECODE" nil)
   ;; Enable built-in Emacs MCP tools (xref, treesit, imenu, project-info)
