@@ -20,12 +20,6 @@
 (package! claude-code-ide
   :recipe (:host github :repo "manzaltu/claude-code-ide.el"))
 
-;; Eat terminal emulator (pure Elisp, used as claude-code-ide backend)
-(package! eat
-  :recipe (:host codeberg :repo "akib/emacs-eat"
-           :files ("*.el" ("term" "term/*.el") "terminfo" "terminfo68"
-                   ("e" "e/eat.el") ("e" "e/eat-test.el"))))
-
 ;; vterm anti-flicker filter - reduces visual flickering in vterm
 (package! vterm-anti-flicker-filter
   :recipe (:host github :repo "martinbaillie/vterm-anti-flicker-filter"))

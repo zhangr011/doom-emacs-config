@@ -98,7 +98,9 @@
     (when (fboundp 'rime-lib-sync-user-data)
       (ignore-errors (rime-sync))))
   ;; Show rime status with color indicator in modeline
-  (setq mode-line-mule-info '((:eval (rime-lighter)))))
+  (setq mode-line-mule-info '((:eval (rime-lighter))))
+  ;; Activate rime by default on startup
+  (rime-mode 1))
 
 ;; Lua mode configuration with 4-space indentation (using tree-sitter)
 (after! lua-ts-mode
@@ -126,6 +128,12 @@
 
 ;; Maximize frame on startup
 (add-hook! 'after-init-hook #'toggle-frame-maximized)
+
+;; Font configuration - good Unicode support for terminal and Claude Code
+(setq doom-font (font-spec :family "Menlo" :size 13)
+      doom-symbol-font (font-spec :family "Symbols Nerd Font Mono"))
+;; Avoid high line-spacing which breaks terminal box lines
+(setq-default line-spacing nil)
 
 ;; LSP server configuration
 (use-package! eglot
@@ -157,7 +165,12 @@
 
 ;; vterm anti-flicker filter
 (after! vterm
-  (add-hook! 'vterm-mode-hook #'vterm-anti-flicker-filter-mode))
+  (add-hook! 'vterm-mode-hook #'vterm-anti-flicker-filter-enable)
+  (setq vterm-blink-cursor nil))
+
+;; Disable cursor blinking globally
+(blink-cursor-mode 0)
+(setq visible-bell nil)
 
 ;; Claude Code IDE integration
 (after! claude-code-ide
@@ -168,6 +181,8 @@
   (setq claude-code-ide-cli-path "/Users/zhangrong/.local/bin/claude")
   ;; Use vterm terminal backend
   (setq claude-code-ide-terminal-backend 'vterm)
+  ;; Buffer multiline output to prevent flickering
+  (setq claude-code-vterm-buffer-multiline-output t)
   ;; Clear nesting detection env var so claude can start inside Emacs
   (setenv "CLAUDECODE" nil)
   ;; Enable built-in Emacs MCP tools (xref, treesit, imenu, project-info)
