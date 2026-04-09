@@ -187,3 +187,24 @@
   (add-to-list 'eglot-server-programs
                `(csharp-mode . ("dotnet" "/usr/local/share/dotnet/Roslyn/bin/Microsoft.CodeAnalysis.LanguageServer.dll"))))
 
+;; Claude Code IDE integration
+(after! claude-code-ide
+  ;; Keybinding for Claude Code IDE menu
+  (map! :leader
+        :desc "Claude Code IDE" "c c" #'claude-code-ide-menu)
+  ;; Set full path to Claude CLI (Emacs on macOS may not inherit shell PATH)
+  (setq claude-code-ide-cli-path "/Users/zhangrong/.local/bin/claude")
+  ;; Clear nesting detection env var so claude can start inside Emacs
+  (setenv "CLAUDECODE" nil)
+  ;; Enable built-in Emacs MCP tools (xref, treesit, imenu, project-info)
+  (claude-code-ide-emacs-tools-setup)
+  ;; Optional: Customize window placement
+  (setq claude-code-ide-window-side 'right
+        claude-code-ide-window-width 100))
+
+;; Ensure Claude Code IDE can find a working directory
+;; Override to guarantee a string is always returned
+(advice-add 'claude-code-ide--get-working-directory :filter-return
+            (lambda (dir)
+              (or dir (expand-file-name "~"))))
+
