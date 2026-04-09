@@ -12,8 +12,9 @@
 
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 ;; (package! some-package)
-(package! liberime
-  :recipe (:host github :repo "merrickluo/liberime"))
+(package! rime
+  :recipe (:host github :repo "DogLooksGood/emacs-rime"
+           :files ("*.el" "Makefile" "lib.c")))
 
 ;; Claude Code IDE integration
 (package! claude-code-ide
