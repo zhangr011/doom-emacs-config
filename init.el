@@ -16,7 +16,7 @@
 
 (doom! :input
        ;;bidi              ; (tfel ot) thgir etirw uoy gnipleh
-       (chinese +rime)    ; Rime input method for Chinese
+       ;;chinese           ; managed via packages.el + config.el instead
        ;;japanese
        ;;layout            ; auie,ctsrnm is the superior home row
 

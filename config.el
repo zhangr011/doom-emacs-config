@@ -74,63 +74,31 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
-;; Rime input method configuration (Squirrel on macOS)
-;; (after! rime
-;;   (setq default-input-method "rime"
-;;         rime-librime-root "/opt/homebrew"
-;;         rime-user-data-dir "~/Library/Rime"
-;;         rime-show-candidate 'posframe)
-;;   (map! :map rime-mode-map
-;;         :i "C-`" #'rime-send-keybinding))
+;; emacs-rime configuration - Rime input method for Emacs
+;; Must be set before compilation (doom sync), not inside after!
+(setq rime-librime-root "/opt/homebrew"
+      rime-emacs-module-header-root "/opt/homebrew/opt/emacs/include")
 
-;; Toggle Rime input method with C-\ or C-`
-;; (map! :i "C-\\" #'toggle-input-method)
-;; (map! :i "C-`" #'toggle-input-method)
-
-(use-package! liberime
-  :load-path "~/.config/doom"
-  :init
-  (setq liberime-user-data-dir "~/Library/rime"
-        liberime-module-file "~/.config/doom/lib/liberime-core.so")
-  :config
-  ;; Automatically build liberime-core if not loaded
-  (when (not (liberime-workable-p))
-    (liberime-build)))
-
-(defun pyim-probe-evil-normal-mode ()
-  "禁用 Evil normal mode 探针。"
-  nil)
-
-(use-package! pyim
-  ;; :quelpa (pyim :fetcher github :repo "merrickluo/pyim")
-  :init
-  (setq pyim-title "R")
-  :config
-  ;; (use-package pyim-basedict
-  ;;   :config
-  ;;   (pyim-basedict-enable))
-  (global-set-key (kbd "M-j") 'pyim-convert-string-at-point)
-  (setq pyim-dcache-auto-update nil)
-  (setq default-input-method "pyim")
-  ;; 我使用全拼
-  (setq pyim-default-scheme 'rime)
-  (setq pyim-page-tooltip 'child-frame)
-
-  ;; 设置 pyim 探针设置，这是 pyim 高级功能设置，可以实现 *无痛* 中英文切换 :-)
-  ;; 我自己使用的中英文动态切换规则是：
-  ;; 1. 光标只有在注释里面时，才可以输入中文。
-  ;; 2. 光标前是汉字字符时，才能输入中文。
-  ;; 3. 使用 M-j 快捷键，强制将光标前的拼音字符串转换为中文。
-  (setq-default pyim-english-input-switch-functions
-		'(pyim-probe-dynamic-english
-		  pyim-probe-isearch-mode
-		  pyim-probe-program-mode
-                  pyim-probe-evil-normal-mode
-		  pyim-probe-org-structure-template))
-
-  (setq-default pyim-punctuation-half-width-functions
-		'(pyim-probe-punctuation-line-beginning
-		  pyim-probe-punctuation-after-punctuation)))
+(after! rime
+  (setq default-input-method "rime"
+        rime-user-data-dir (expand-file-name "~/Library/Rime")
+        rime-share-data-dir (expand-file-name "~/Library/Rime/sync/Rime")
+        rime-show-candidate 'posframe
+        rime-disable-predicates '(rime-predicate-after-alphabet-char-p
+                                   rime-predicate-prog-in-code-p
+                                   rime-predicate-in-code-string-p
+                                   rime-predicate-evil-mode-p
+                                   rime-predicate-space-after-cc-p
+                                   rime-predicate-current-uppercase-letter-p))
+  ;; Send C-` to Rime for schema switcher menu
+  (map! :map rime-mode-map
+        :i "C-`" #'rime-send-keybinding)
+  ;; Sync user data on exit
+  (add-hook! 'kill-emacs-hook
+    (when (fboundp 'rime-lib-sync-user-data)
+      (ignore-errors (rime-sync))))
+  ;; Show rime status with color indicator in modeline
+  (setq mode-line-mule-info '((:eval (rime-lighter)))))
 
 ;; Lua mode configuration with 4-space indentation (using tree-sitter)
 (after! lua-ts-mode
