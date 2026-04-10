@@ -130,8 +130,7 @@
 (add-hook! 'after-init-hook #'toggle-frame-maximized)
 
 ;; Font configuration - good Unicode support for terminal and Claude Code
-(setq doom-font (font-spec :family "Menlo" :size 13)
-      doom-symbol-font (font-spec :family "Symbols Nerd Font Mono"))
+(setq doom-font (font-spec :family "JuliaMono" :size 13))
 ;; Avoid high line-spacing which breaks terminal box lines
 (setq-default line-spacing nil)
 
