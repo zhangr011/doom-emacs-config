@@ -126,6 +126,17 @@
 ;; Auto-enable lua-ts-mode for lua files
 (add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-ts-mode))
 
+;; In isearch, C-s with empty string yanks word at point
+(defun my/isearch-yank-word-if-empty (&rest _)
+  "Yank word at point into isearch if search string is empty."
+  (when (and isearch-mode (string= isearch-string ""))
+    (let ((word (thing-at-point 'word t)))
+      (when word
+        (isearch-yank-string word)))))
+
+(advice-add 'isearch-repeat-forward :before #'my/isearch-yank-word-if-empty)
+(advice-add 'isearch-repeat-backward :before #'my/isearch-yank-word-if-empty)
+
 ;; Maximize frame on startup
 (add-hook! 'after-init-hook #'toggle-frame-maximized)
 
