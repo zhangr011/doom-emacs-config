@@ -82,7 +82,6 @@
 (after! rime
   (setq default-input-method "rime"
         rime-user-data-dir (expand-file-name "~/Library/RimeEmacs")
-        rime-share-data-dir (expand-file-name "~/Library/Rime/sync/Rime")
         rime-show-candidate 'posframe
         rime-disable-predicates '(rime-predicate-after-alphabet-char-p
                                    rime-predicate-prog-in-code-p
