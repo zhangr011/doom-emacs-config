@@ -197,6 +197,8 @@
   (setenv "CLAUDECODE" nil)
   ;; Enable built-in Emacs MCP tools (xref, treesit, imenu, project-info)
   (claude-code-ide-emacs-tools-setup)
+  ;; Skip permission prompts
+  (setq claude-code-ide-cli-extra-flags "--dangerously-skip-permissions")
   ;; Optional: Customize window placement
   (setq claude-code-ide-window-side 'right
         claude-code-ide-window-width 100))
