@@ -102,26 +102,57 @@
   ;; Activate rime by default on startup
   (rime-mode 1))
 
-;; Lua mode configuration with 4-space indentation (using tree-sitter)
+;; Custom tree-sitter anchor: returns the start position of the first ancestor
+;; that is the first non-whitespace on its line. Unlike `standalone-parent'
+;; (which returns BOL), this preserves the ancestor's actual column.
+(defun my-lua-standalone-anchor (node parent bol)
+  (let ((p parent))
+    (while (and p
+                (let ((start (treesit-node-start p)))
+                  (save-excursion
+                    (goto-char start)
+                    (forward-line 0)
+                    (skip-chars-forward " \t")
+                    (not (= (point) start)))))
+      (setq p (treesit-node-parent p)))
+    (or (and p (treesit-node-start p)) 1)))
+
+;; Lua mode: tree-sitter with 4-space indentation
+;; Rules ensure block content indents from line start (not keyword column),
+;; so inline functions like `self:on(event, function() ... end)` indent correctly.
 (after! lua-ts-mode
-  (setq treesit-simple-indent-rules
+  (setq lua-ts-indent-offset 4
+        treesit-simple-indent-rules
         `((lua
-           ((node-is ")") parent-bol 0)
-           ((node-is "]") parent-bol 0)
-           ((node-is "else") parent-bol 0)
-           ((node-is "elseif") parent-bol 0)
-           ((node-is "end") parent-bol 0)
-           ((match "block" "function_definition" "arguments" "function_call") parent 8)
-           ((parent-is "block") parent 4)
-           ((parent-is "function_definition") parent 4)
-           ((parent-is "function_call") parent 4)
-           ((parent-is "arguments") parent 4)
-           ((parent-is "table_constructor") parent-bol 4)
-           ((parent-is "if_statement") parent-bol 4)
-           ((parent-is "repeat_statement") parent-bol 4)
-           ((parent-is "while_statement") parent-bol 4)
-           ((parent-is "for_statement") parent-bol 4)
-           ((parent-is "assignment_expression") parent-bol 4)))))
+           ;; Closing keywords: align to opener's column
+           ((or (node-is "end") (node-is "until") (node-is ")")
+                (node-is "}") (node-is "]") (node-is "do") (node-is "then")
+                (node-is "else_statement") (node-is "elseif_statement"))
+            my-lua-standalone-anchor 0)
+           ;; New block: indent from opener's column
+           ((node-is "block") my-lua-standalone-anchor 4)
+           ;; Inside existing block: match first child's column
+           ((parent-is "block") parent 0)
+           ;; Control structure bodies (fallback)
+           ((or (parent-is "function_definition")
+                (parent-is "function_declaration")
+                (parent-is "if_statement")
+                (parent-is "for_statement")
+                (parent-is "while_statement")
+                (parent-is "repeat_statement")
+                (parent-is "do_statement")
+                (parent-is "else_statement")
+                (parent-is "elseif_statement"))
+            my-lua-standalone-anchor 4)
+           ;; Arguments, parameters, tables
+           ((or (parent-is "arguments")
+                (parent-is "parameters")
+                (parent-is "table_constructor"))
+            my-lua-standalone-anchor 4)
+           ;; Top level
+           ((parent-is "chunk") column-0 0)
+           ;; Error fallback
+           ((parent-is "ERROR") no-indent 0)))))
 
 ;; Auto-enable lua-ts-mode for lua files
 (add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-ts-mode))
