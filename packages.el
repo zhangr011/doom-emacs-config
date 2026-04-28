@@ -20,6 +20,9 @@
 (package! claude-code-ide
   :recipe (:host github :repo "manzaltu/claude-code-ide.el"))
 
+;; Pinyin matching for orderless completion (Chinese search in minibuffer)
+(package! pinyinlib)
+
 ;; vterm anti-flicker filter - reduces visual flickering in vterm
 (package! vterm-anti-flicker-filter
   :recipe (:host github :repo "martinbaillie/vterm-anti-flicker-filter"))

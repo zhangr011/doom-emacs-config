@@ -3,7 +3,6 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
-
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
 ;; (setq user-full-name "John Doe"
@@ -41,7 +40,6 @@
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org/")
-
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `with-eval-after-load' block, otherwise Doom's defaults may override your
@@ -156,6 +154,39 @@
 
 ;; Auto-enable lua-ts-mode for lua files
 (add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-ts-mode))
+
+;; Isearch + Rime: deactivate input method on isearch start.
+;; Rime doesn't work in the isearch echo area. Deactivate it so English
+;; search works normally. Press C-\ during isearch to enter minibuffer
+;; editing with Rime for Chinese search.
+(defun my/isearch-deactivate-input-method ()
+  "Deactivate input method when isearch starts."
+  (when current-input-method
+    (deactivate-input-method)))
+
+(defun my/isearch-toggle-input-method ()
+  "In isearch, enter minibuffer editing before toggling input method."
+  (interactive)
+  (if isearch-mode
+      (let ((minibuffer-setup-hook
+             (cons (lambda () (toggle-input-method))
+                   minibuffer-setup-hook)))
+        (isearch-edit-string))
+    (toggle-input-method)))
+
+;; Deactivate Rime when isearch starts
+(add-hook 'isearch-mode-hook #'my/isearch-deactivate-input-method)
+;; Case 2: C-\ pressed during isearch
+(define-key isearch-mode-map (kbd "C-\\") #'my/isearch-toggle-input-method)
+
+;; Pinyin matching for orderless (Chinese completion in minibuffer/consult)
+(use-package! pinyinlib
+  :after orderless
+  :config
+  (defun orderless-regexp-pinyin (str)
+    "Match STR as a pinyin regex."
+    (orderless-regexp (pinyinlib-build-regexp-string str)))
+  (add-to-list 'orderless-matching-styles 'orderless-regexp-pinyin))
 
 ;; In isearch, C-s with empty string yanks word at point
 (defun my/isearch-yank-word-if-empty (&rest _)
