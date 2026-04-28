@@ -3,6 +3,7 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
+
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
 ;; (setq user-full-name "John Doe"
@@ -40,6 +41,7 @@
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org/")
+
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `with-eval-after-load' block, otherwise Doom's defaults may override your
@@ -159,6 +161,7 @@
 ;; Rime doesn't work in the isearch echo area. Deactivate it so English
 ;; search works normally. Press C-\ during isearch to enter minibuffer
 ;; editing with Rime for Chinese search.
+
 (defun my/isearch-deactivate-input-method ()
   "Deactivate input method when isearch starts."
   (when current-input-method
@@ -270,4 +273,7 @@
 (advice-add 'claude-code-ide--get-working-directory :filter-return
             (lambda (dir)
               (or dir (expand-file-name "~"))))
+
+;; Delete trailing whitespace on save
+(add-hook! 'before-save-hook #'delete-trailing-whitespace)
 
